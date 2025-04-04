@@ -51,31 +51,79 @@ This repository can serve as the foundation for more complex workflows:
 
 This workflow is designed not for mass-volume spammy outreach, but to provide decisive, information-rich retrievals for job seekers targeting specific types of companies.
 
-## Usage
-
-Each system prompt includes space for users to describe their specific requirements in detail, allowing the research to be tailored to their particular needs. For example:
-- Target industries
-- Preferred company sizes
-- Geographic preferences
-- Specific remote work arrangements
-- Other job-seeking criteria
-
 ## Getting Started
 
-1. Choose the appropriate prompt file based on your needs:
+1. Clone this repository and navigate to the project directory
+
+2. Create a `.env` file based on the provided `.env.example` and add your API keys:
+   ```
+   HUNTER_API_KEY=your_hunter_api_key
+   PERPLEXITY_API_KEY=your_perplexity_api_key
+   OPENROUTER_API_KEY=your_openrouter_api_key
+   ```
+
+3. Install the required dependencies:
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+4. Choose the appropriate prompt file based on your needs:
    - `prompts/basic.md` for general company research
    - `prompts/remote-general.md` for remote work assessment
    - `prompts/remote-ex-isr.md` for Israel-specific remote work research
 
-2. Copy the entire system prompt section into your LLM or research tool
+5. **Running the Research Agent**:
+   
+   You can run the research agent using the provided wrapper script:
+   ```bash
+   ./run_research.sh
+   ```
+   
+   This will start an interactive session where you can enter a company name and additional information.
+   
+   The generated reports will be saved in the `as-agent/outputs` directory as Markdown files with timestamps.
 
-3. For applications requiring structured data, use the JSON schema provided at the bottom of each prompt file
+6. **Viewing Reports** (Optional):
+   
+   To browse and interact with your generated reports in a web interface:
+   ```bash
+   ./run_report_viewer.sh
+   ```
+   
+   This will start a local web server at http://localhost:5000 where you can:
+   - View all generated reports
+   - Copy email addresses with a single click
+   - Copy cover letters with a single click
+   - Sort reports by date or company name
 
-4. Customize the prompt with your specific requirements
+7. **Using Components Independently**:
+   
+   - **Research Agent Only**: If you only want to generate reports without using the viewer, just run the research agent and access the Markdown files directly in the `as-agent/outputs` directory.
+   
+   - **Report Viewer Only**: If you already have generated reports and just want to view them, you can run the report viewer without generating new reports.
+   
+   - **Custom Integration**: The modular design allows you to integrate these components into your own workflows as needed.
 
-5. Deploy with your preferred LLM or research tool
+## Report Viewer
 
-6. Review and refine the generated company research reports
+1. **Installation**: The report viewer requires Flask and a few other Python packages. These dependencies are included in the main `requirements.txt` file.
+
+2. **Starting the Viewer**:
+   ```bash
+   ./run_report_viewer.sh
+   ```
+   This script will install the necessary dependencies and start the Flask server.
+
+3. **Features**:
+   - Browse all generated reports in a user-friendly web interface
+   - View reports organized by date or alphabetically
+   - Copy email addresses with a single click
+   - Copy cover letters with a single click
+   - View remote work scores with visual indicators
+   - Responsive design for desktop and mobile viewing
+
+4. **Accessing the Viewer**:
+   Once started, the report viewer will be available at http://localhost:5000
 
 ## Contributing
 

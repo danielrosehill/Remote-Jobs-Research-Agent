@@ -1,0 +1,9 @@
+{
+  "has_restrictions": true,
+  "restricted_to": [],
+  "excluded_regions": [],
+  "time_zone_requirements": "Eastern Time (ET)",
+  "restriction_level": "none",
+  "restriction_description": "Time zone requirements: Eastern Time (ET)",
+  "company_url": "relevanceai.com"
+}

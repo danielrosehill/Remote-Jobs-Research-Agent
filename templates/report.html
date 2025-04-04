@@ -1,0 +1,248 @@
+{% extends "base.html" %}
+
+{% block title %}{{ company_name }} - Research Report{% endblock %}
+
+{% block sidebar %}
+    <a href="{{ url_for('view_report', filename=filename) }}" class="list-group-item list-group-item-action report-list-item active">
+        <div class="d-flex w-100 justify-content-between">
+            <h5 class="mb-1">{{ company_name }}</h5>
+            <small>Current</small>
+        </div>
+    </a>
+    
+    {% for report in reports %}
+    {% if report.filename != filename %}
+    <a href="{{ url_for('view_report', filename=report.filename) }}" class="list-group-item list-group-item-action report-list-item">
+        <div class="d-flex w-100 justify-content-between">
+            <h5 class="mb-1">{{ report.company_name }}</h5>
+            <small>{{ report.timestamp.strftime('%Y-%m-%d') }}</small>
+        </div>
+        <small class="text-muted">{{ report.timestamp.strftime('%H:%M:%S') }}</small>
+    </a>
+    {% endif %}
+    {% endfor %}
+{% endblock %}
+
+{% block content %}
+    <div class="mb-4">
+        <a href="{{ url_for('index') }}" class="btn btn-outline-secondary btn-sm">
+            <i class="bi bi-arrow-left"></i> Back to Reports
+        </a>
+    </div>
+
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <h1>{{ company_name }}</h1>
+        </div>
+        <div class="col-md-4 text-md-end">
+            {% if sections.get('remote_score') %}
+            <div class="remote-score 
+                {% if sections.get('remote_score')|int >= 7 %}score-high
+                {% elif sections.get('remote_score')|int >= 4 %}score-medium
+                {% else %}score-low{% endif %}">
+                Remote Score: {{ sections.get('remote_score') }}/10
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    {% if sections.get('location_warning') or location_restrictions and location_restrictions.has_restrictions %}
+    <div class="alert alert-warning mb-4">
+        <h4 class="alert-heading"><i class="bi bi-exclamation-triangle-fill"></i> Location Compatibility Warning</h4>
+        {% if sections.get('location_warning') %}
+            <p class="mb-1"><strong>{{ sections.get('location_warning') }}</strong></p>
+        {% endif %}
+        
+        {% if location_restrictions and location_restrictions.has_restrictions %}
+        <hr>
+        <h5>Location Restrictions:</h5>
+        <ul class="mb-0">
+            {% if location_restrictions.restricted_to %}
+            <li><strong>Restricted to:</strong> {{ location_restrictions.restricted_to|join(', ') }}</li>
+            {% endif %}
+            
+            {% if location_restrictions.excluded_regions %}
+            <li><strong>Excluded regions:</strong> {{ location_restrictions.excluded_regions|join(', ') }}</li>
+            {% endif %}
+            
+            {% if location_restrictions.time_zone_requirements %}
+            <li><strong>Time zone requirements:</strong> {{ location_restrictions.time_zone_requirements }}</li>
+            {% endif %}
+        </ul>
+        {% endif %}
+    </div>
+    {% endif %}
+
+    <!-- Tabs for different sections -->
+    <ul class="nav nav-tabs mb-4" id="reportTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="research-tab" data-bs-toggle="tab" data-bs-target="#research" type="button" role="tab" aria-controls="research" aria-selected="true">Research Report</button>
+        </li>
+        {% if sections.get('cover_letter') %}
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="cover-letter-tab" data-bs-toggle="tab" data-bs-target="#cover-letter" type="button" role="tab" aria-controls="cover-letter" aria-selected="false">Cover Letter</button>
+        </li>
+        {% endif %}
+        {% if emails %}
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="emails-tab" data-bs-toggle="tab" data-bs-target="#emails" type="button" role="tab" aria-controls="emails" aria-selected="false">Emails</button>
+        </li>
+        {% endif %}
+        {% if location_restrictions %}
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="location-tab" data-bs-toggle="tab" data-bs-target="#location" type="button" role="tab" aria-controls="location" aria-selected="false">Location Info</button>
+        </li>
+        {% endif %}
+    </ul>
+
+    <div class="tab-content" id="reportTabsContent">
+        <!-- Research Report Tab -->
+        <div class="tab-pane fade show active" id="research" role="tabpanel" aria-labelledby="research-tab">
+            {{ html_content|safe }}
+        </div>
+
+        <!-- Cover Letter Tab -->
+        {% if sections.get('cover_letter') %}
+        <div class="tab-pane fade" id="cover-letter" role="tabpanel" aria-labelledby="cover-letter-tab">
+            <div class="card mb-3">
+                <div class="card-header">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">Cover Letter for {{ sections.get('cover_letter_company', company_name) }}</h5>
+                        <span class="badge bg-info">~{{ sections.get('cover_letter')|length }} words</span>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="copyable-section">
+                        <button id="copy-cover-letter" class="btn btn-sm btn-outline-primary copy-btn" 
+                                onclick="copyToClipboard(`{{ sections.get('cover_letter') }}`, 'copy-cover-letter')">
+                            <i class="bi bi-clipboard"></i> Copy
+                        </button>
+                        <div class="mt-3">
+                            {{ sections.get('cover_letter')|replace('\n', '<br>')|safe }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Emails Tab -->
+        {% if emails %}
+        <div class="tab-pane fade" id="emails" role="tabpanel" aria-labelledby="emails-tab">
+            <h3 class="mb-3">Contact Emails</h3>
+            <div class="alert alert-info">
+                <i class="bi bi-info-circle"></i> These emails were extracted from the research report. Click the copy button to copy an email address.
+            </div>
+            
+            <div class="list-group">
+                {% for email in emails %}
+                <div class="email-item">
+                    <div class="email-text">{{ email }}</div>
+                    <button class="btn btn-sm btn-outline-primary copy-btn" id="copy-email-{{ loop.index }}"
+                            onclick="copyToClipboard('{{ email }}', 'copy-email-{{ loop.index }}')">
+                        <i class="bi bi-clipboard"></i>
+                    </button>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Location Info Tab -->
+        {% if location_restrictions %}
+        <div class="tab-pane fade" id="location" role="tabpanel" aria-labelledby="location-tab">
+            <h3 class="mb-3">Location Restrictions</h3>
+            
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        {% if location_restrictions.has_restrictions %}
+                            <span class="badge 
+                                {% if location_restrictions.restriction_level == 'high' %}bg-danger
+                                {% elif location_restrictions.restriction_level == 'medium' %}bg-warning text-dark
+                                {% elif location_restrictions.restriction_level == 'low' %}bg-info text-dark
+                                {% else %}bg-success{% endif %}">
+                                {{ location_restrictions.restriction_level|capitalize }} Restrictions
+                            </span>
+                        {% else %}
+                            <span class="badge bg-success">No Restrictions</span>
+                        {% endif %}
+                    </h5>
+                </div>
+                <div class="card-body">
+                    {% if location_restrictions.has_restrictions %}
+                        <p class="lead">{{ location_restrictions.restriction_description }}</p>
+                        
+                        <h5 class="mt-4">Details:</h5>
+                        <ul>
+                            {% if location_restrictions.restricted_to %}
+                            <li>
+                                <strong>Restricted to:</strong>
+                                <ul>
+                                    {% for region in location_restrictions.restricted_to %}
+                                    <li>{{ region }}</li>
+                                    {% endfor %}
+                                </ul>
+                            </li>
+                            {% endif %}
+                            
+                            {% if location_restrictions.excluded_regions %}
+                            <li>
+                                <strong>Excluded regions:</strong>
+                                <ul>
+                                    {% for region in location_restrictions.excluded_regions %}
+                                    <li>{{ region }}</li>
+                                    {% endfor %}
+                                </ul>
+                            </li>
+                            {% endif %}
+                            
+                            {% if location_restrictions.time_zone_requirements %}
+                            <li>
+                                <strong>Time zone requirements:</strong> {{ location_restrictions.time_zone_requirements }}
+                            </li>
+                            {% endif %}
+                        </ul>
+                    {% else %}
+                        <p class="lead">This company does not appear to have any location restrictions.</p>
+                        <p>You may be able to work from anywhere in the world, but always confirm this information directly with the company.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Get all reports for the sidebar
+    fetch('/api/reports')
+        .then(response => response.json())
+        .then(data => {
+            const sidebarReports = data.filter(report => report.filename !== '{{ filename }}');
+            const sidebarElement = document.querySelector('.sidebar .list-group');
+            
+            // Current report is already added, so we just need to add the others
+            sidebarReports.forEach(report => {
+                const reportDate = new Date(report.timestamp);
+                const dateStr = reportDate.toISOString().split('T')[0];
+                const timeStr = reportDate.toTimeString().split(' ')[0];
+                
+                const reportElement = document.createElement('a');
+                reportElement.href = `/report/${report.filename}`;
+                reportElement.className = 'list-group-item list-group-item-action report-list-item';
+                reportElement.innerHTML = `
+                    <div class="d-flex w-100 justify-content-between">
+                        <h5 class="mb-1">${report.company_name}</h5>
+                        <small>${dateStr}</small>
+                    </div>
+                    <small class="text-muted">${timeStr}</small>
+                `;
+                
+                sidebarElement.appendChild(reportElement);
+            });
+        })
+        .catch(error => console.error('Error fetching reports:', error));
+</script>
+{% endblock %}

@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block title %}Company Research Reports{% endblock %}
+
+{% block sidebar %}
+    {% for report in reports %}
+    <a href="{{ url_for('view_report', filename=report.filename) }}" class="list-group-item list-group-item-action report-list-item">
+        <div class="d-flex w-100 justify-content-between">
+            <h5 class="mb-1">{{ report.company_name }}</h5>
+            <small>{{ report.timestamp.strftime('%Y-%m-%d') }}</small>
+        </div>
+        <small class="text-muted">{{ report.timestamp.strftime('%H:%M:%S') }}</small>
+    </a>
+    {% else %}
+    <div class="list-group-item">
+        <p class="mb-0">No reports found.</p>
+        <small class="text-muted">Run the company research agent to generate reports.</small>
+    </div>
+    {% endfor %}
+{% endblock %}
+
+{% block content %}
+    <div class="text-center py-5">
+        <h1>Company Research Reports</h1>
+        <p class="lead">Select a report from the sidebar to view its contents.</p>
+        
+        {% if not reports %}
+        <div class="alert alert-info mt-4">
+            <h4 class="alert-heading">No reports found!</h4>
+            <p>To generate a company research report, run the company research agent:</p>
+            <pre class="bg-light p-3 text-start"><code>python as-agent/company_research.py</code></pre>
+            <p>Reports will be saved in the <code>as-agent/outputs</code> directory and will appear here.</p>
+        </div>
+        {% endif %}
+    </div>
+{% endblock %}
