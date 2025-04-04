@@ -1,13 +1,13 @@
-# Company Research Agent Template
+# Remote Jobs Research Agent
 
 ## Overview
-This repository provides building blocks for creating deep research agents specifically designed to assist remote job seekers in researching companies. The agents focus on gathering comprehensive information about companies, with particular emphasis on their remote work policies, culture, and hiring practices.
+This repository provides a specialized agent designed to assist remote job seekers in researching companies. The agent focuses on gathering comprehensive information about companies, with particular emphasis on their remote work policies, culture, and hiring practices.
 
 ## Purpose
 Finding detailed information about a company's remote work policies can be challenging and time-consuming. This project aims to:
 
 1. Streamline the research process for remote job seekers
-2. Provide structured, information-rich reports on companies
+2. Provide structured, information-rich reports on companies (in both Markdown and PDF formats)
 3. Help job seekers make informed decisions about potential employers
 4. Assess companies' openness to remote work and any geographic restrictions
 
@@ -81,7 +81,7 @@ This workflow is designed not for mass-volume spammy outreach, but to provide de
    
    This will start an interactive session where you can enter a company name and additional information.
    
-   The generated reports will be saved in the `as-agent/outputs` directory as Markdown files with timestamps.
+   The generated reports will be saved in the `as-agent/outputs/[Company_Name]/[Date]` directory as both Markdown and PDF files with timestamps.
 
 6. **Viewing Reports** (Optional):
    
@@ -104,6 +104,42 @@ This workflow is designed not for mass-volume spammy outreach, but to provide de
    
    - **Custom Integration**: The modular design allows you to integrate these components into your own workflows as needed.
 
+## Key Features
+
+### Organized Research Sections
+Research data is now organized into meaningful sections:
+- Company Overview
+- Remote Work Policies
+- Leadership and Funding
+- Career Opportunities
+- Company Culture and Values
+- Market Positioning
+- Company Reputation
+
+### Optional Cover Letter Generation
+- During the research process, you'll be asked if you want to generate a cover letter
+- Cover letters are entirely optional and only generated when explicitly requested
+- If you choose to generate a cover letter, you'll be prompted to provide your reason for interest in the company
+
+### PDF Report Generation
+- Reports are automatically generated in both Markdown and PDF formats
+- PDF files provide a professional format for saving and sharing research
+- PDF generation uses the `markdown-pdf` package, which is installed automatically
+- If PDF generation fails, the script will continue and provide instructions for manual installation
+
+### Location Compatibility Tracking
+- The agent extracts and tracks location restrictions from company data
+- Structured JSON storage of location restrictions for programmatic access
+- Compatibility checking between company restrictions and candidate location
+- Visual warnings for location incompatibility in the report viewer
+
+### Improved File Organization
+- Reports are now organized in a hierarchical structure:
+  - `outputs/[Company_Name]/[Date]/[Company_Name]_[Timestamp].md`
+  - `outputs/[Company_Name]/[Date]/[Company_Name]_[Timestamp].pdf`
+  - `outputs/[Company_Name]/[Date]/json/[Company_Name]_[Timestamp]_location.json`
+- This organization makes it easier to find reports for specific companies and dates
+
 ## Report Viewer
 
 1. **Installation**: The report viewer requires Flask and a few other Python packages. These dependencies are included in the main `requirements.txt` file.
@@ -118,13 +154,14 @@ This workflow is designed not for mass-volume spammy outreach, but to provide de
    - Browse all generated reports in a user-friendly web interface
    - View reports organized by date or alphabetically
    - Copy email addresses with a single click
-   - Copy cover letters with a single click
+   - Copy cover letters with a single click (if generated)
    - View remote work scores with visual indicators
    - Responsive design for desktop and mobile viewing
+   - Dedicated location information tab with color-coded restriction indicators
 
 4. **Accessing the Viewer**:
    Once started, the report viewer will be available at http://localhost:5000
 
 ## Contributing
 
-Contributions to improve templates, system prompts, or suggest new workflow ideas are welcome!
+Contributions to improve prompts, system functionality, or suggest new workflow ideas are welcome!
