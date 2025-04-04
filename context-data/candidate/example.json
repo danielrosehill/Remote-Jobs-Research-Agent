@@ -1,0 +1,97 @@
+[
+    {
+      "personal_information": {
+        "name": "Daniel Rosehill",
+        "location": "Jerusalem, Israel",
+        "public_email": "public@danielrosehill.com",
+        "website": "https://danielrosehill.com",
+        "resume": "https://danielrosehill.com/resume/",
+        "github": "https://github.com/danielrosehill",
+        "linkedin": "https://www.linkedin.com/in/danielrosehill/",
+        "hugging_face": "https://huggingface.co/danielrosehill"
+      },
+      "career_goals_and_preferences": {
+        "objective": "Secure a role leveraging strengths in communication, technology understanding, and creativity, with a strong preference for the AI domain. Focus on the application, usability, documentation, and strategic communication *around* technology, rather than core software development.",
+        "ideal_roles": [
+          "Marketing Communications Manager",
+          "Communications Manager",
+          "Developer Relations (DevRel)",
+          "Technical Writer (AI focus)",
+          "AI Project Coordinator",
+          "Knowledge Management Specialist (AI focus)"
+        ],
+        "location_preferences": [
+          "Fully Remote (Globally, subject to labor laws)",
+          "Hybrid or Full-Time in Jerusalem, Israel"
+        ]
+      },
+      "professional_experience": [
+        {
+          "title": "Sir Ronald Cohen (Communications Manager)",
+          "location": "Global (Remote)",
+          "dates": "2022 – Feb 2025",
+          "description": "Led strategic communications for the impact investing pioneer. Collaborated with the International Foundation for Valuing Impacts (IFVI) on data visualization projects (e.g., GVFD derivative database - see Portfolio). Developed and executed communication strategies, created diverse content, managed stakeholder/media relations. Updated, managed translations, and fact-checked Sir Ronald Cohen's 'Impact' book (Version 2)."
+        },
+        {
+          "title": "DSR Holdings (Independent Consultant)",
+          "location": "Israel",
+          "dates": "2015 – Present",
+          "description": "Provided technical communications, documentation (user guides for complex systems), prompt engineering, content strategy, and marketing communications services. Consulted for businesses in cybersecurity, threat intelligence, cloud, IoT, and those exploring AI adoption. Developed comprehensive marketing collateral and drove content strategy implementation."
+        },
+        {
+          "title": "Ayyeka (Marketing Communications Manager)",
+          "location": "Jerusalem, Israel",
+          "dates": "2017 – 2018",
+          "description": "Led marketing communications for an Industrial IoT (IIoT) company. Authored technical white papers (e.g., on low-energy networks). Managed the company's Confluence knowledge base. Developed product marketing materials, coordinated marketing campaigns. Produced internal training videos and materials."
+        },
+        {
+          "title": "Finn Partners (Assistant Account Executive)",
+          "location": "Jerusalem, Israel",
+          "dates": "2015 – 2016",
+          "description": "Supported account management for technology clients. Developed media relations strategies and created content for PR campaigns. Assisted with client communications and reporting."
+        }
+      ],
+      "skills_and_expertise": {
+        "communication_and_strategy": [
+          "Marketing Communications (MarCom)",
+          "Technical Communication",
+          "Content Strategy & Creation",
+          "Technical Writing & Documentation",
+          "Knowledge Management",
+          "Public Speaking & Presentation",
+          "Stakeholder Management",
+          "Media Relations (Basic)",
+          "Brand Messaging"
+        ],
+        "ai_and_technical": [
+          "AI Concepts: RAG Systems, AI Agents, LLMs, Prompt Engineering (inc. System Prompts), Vector Databases, AI Workflows, Context Management, AI Ethics Awareness",
+          "LLM Providers: OpenAI API, Anthropic API, Google Gemini API, Cohere API, Ollama (local LLMs)",
+          "AI Tools/Frameworks: Langchain, ChromaDB, Streamlit, Hugging Face (Spaces, Datasets), Open Web UI",
+          "Programming: Python (Basic Proficiency - scripting, API interaction, data manipulation)",
+          "DevOps & Infrastructure: Linux System Administration (Ubuntu, Fedora, openSUSE), Docker, GitHub/Git, Markdown, Cloudflare, Terraform (Basic Familiarity), AWS (Basic Familiarity), GCP (Basic Familiarity)"
+        ],
+        "software_and_tools": [
+          "Confluence",
+          "Slack",
+          "Microsoft Teams",
+          "Asana",
+          "Monday.com",
+          "Google Workspace",
+          "Microsoft Office Suite",
+          "Video Editing Software (Basic)",
+          "CRM (HubSpot - Basic)"
+        ],
+        "soft_skills": [
+          "Creativity",
+          "Adaptability",
+          "Problem-Solving",
+          "Analytical Thinking",
+          "Strategic Thinking",
+          "Self-Starter",
+          "Detail-Oriented",
+          "Fast Learner (especially technology)",
+          "Cross-cultural Communication"
+        ]
+      }
+    }
+  ]
