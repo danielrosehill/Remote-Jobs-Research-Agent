@@ -13,23 +13,17 @@ Finding detailed information about a company's remote work policies can be chall
 
 ## Repository Structure
 
-### System Prompts
-The repository contains several variations of system prompts:
+### Prompt Files
+The repository contains three comprehensive prompt files, each containing both the system prompt and JSON schema:
 
-- **All-in-one versions**: Complete prompts that include both instructions and templates
-- **Split versions**: Separate files for instructions and templates
-- **JSON array versions**: Structured data format for each prompt variation
+- **[Basic Company Research](/prompts/basic.md)**: General company research without specific focus
+- **[Remote Work Focus](/prompts/remote-general.md)**: Detailed assessment of remote work policies and culture
+- **[Remote Work for Israel](/prompts/remote-ex-isr.md)**: Specialized research for remote job seekers in Israel
 
-### Templates
-Templates are provided in two formats:
-
-- **Markdown templates** (`/templates/as-md/`): Human-readable format
-- **JSON templates** (`/templates/json/`): Structured data format for programmatic use
-
-Each template has multiple variations:
-- Basic company research
-- General remote work assessment
-- Specialized templates (e.g., for specific regions like Israel)
+Each prompt file includes:
+1. A complete system prompt with instructions
+2. A markdown template for the research report
+3. A JSON schema that can be used for structured data processing
 
 ## Recommended Tooling
 
@@ -51,7 +45,7 @@ For enhanced research capabilities, consider using:
 
 This repository can serve as the foundation for more complex workflows:
 
-1. **Initial Deep Research Agent**: Uses the templates in this repository to gather comprehensive company information
+1. **Initial Deep Research Agent**: Uses the prompts in this repository to gather comprehensive company information
 2. **Human-in-the-Loop Layer**: For verification and additional context
 3. **Email Generation Agent**: Creates personalized outreach based on research findings
 
@@ -68,10 +62,20 @@ Each system prompt includes space for users to describe their specific requireme
 
 ## Getting Started
 
-1. Choose the appropriate system prompt version based on your needs
-2. Customize the prompt with your specific requirements
-3. Deploy with your preferred LLM or research tool
-4. Review and refine the generated company research reports
+1. Choose the appropriate prompt file based on your needs:
+   - `prompts/basic.md` for general company research
+   - `prompts/remote-general.md` for remote work assessment
+   - `prompts/remote-ex-isr.md` for Israel-specific remote work research
+
+2. Copy the entire system prompt section into your LLM or research tool
+
+3. For applications requiring structured data, use the JSON schema provided at the bottom of each prompt file
+
+4. Customize the prompt with your specific requirements
+
+5. Deploy with your preferred LLM or research tool
+
+6. Review and refine the generated company research reports
 
 ## Contributing
 
