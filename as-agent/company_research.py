@@ -309,16 +309,37 @@ def filter_career_emails(emails_data):
 
 def generate_research_queries(company_name, additional_info):
     """Generate research queries for the company."""
-    base_queries = [
-        f"Detailed company information for {company_name} {additional_info if additional_info else ''} including size, headquarters, founding date, and description",
-        f"Remote work policies and culture at {company_name} {additional_info if additional_info else ''}, including location restrictions and time zone expectations",
-        f"Leadership team and funding history of {company_name} {additional_info if additional_info else ''}, including VCs and backers",
-        f"Career opportunities and hiring process at {company_name} {additional_info if additional_info else ''}, including salary transparency and compensation strategy",
-        f"Company values, mission, and culture at {company_name} {additional_info if additional_info else ''}, especially regarding remote work",
-        f"Competitors of {company_name} {additional_info if additional_info else ''} and how they compare in terms of remote work policies",
-        f"Any controversies or red flags related to {company_name} {additional_info if additional_info else ''}, especially regarding treatment of employees"
+    queries = [
+        {
+            "title": "Company Overview",
+            "query": f"Detailed company information for {company_name} {additional_info if additional_info else ''} including size, headquarters, founding date, and description"
+        },
+        {
+            "title": "Remote Work Policies",
+            "query": f"Remote work policies and culture at {company_name} {additional_info if additional_info else ''}, including location restrictions and time zone expectations"
+        },
+        {
+            "title": "Leadership and Funding",
+            "query": f"Leadership team and funding history of {company_name} {additional_info if additional_info else ''}, including VCs and backers"
+        },
+        {
+            "title": "Career Opportunities",
+            "query": f"Career opportunities and hiring process at {company_name} {additional_info if additional_info else ''}, including salary transparency and compensation strategy"
+        },
+        {
+            "title": "Company Culture and Values",
+            "query": f"Company values, mission, and culture at {company_name} {additional_info if additional_info else ''}"
+        },
+        {
+            "title": "Market Positioning",
+            "query": f"Market position and competitors of {company_name} {additional_info if additional_info else ''}, including industry trends and business model"
+        },
+        {
+            "title": "Company Reputation",
+            "query": f"Any controversies or notable achievements related to {company_name} {additional_info if additional_info else ''}, including employee reviews and public perception"
+        }
     ]
-    return base_queries
+    return queries
 
 def extract_company_website(research_data):
     """Extract company website from research data."""
@@ -687,8 +708,15 @@ def generate_report(company_name, company_url, additional_info, research_data, e
     research_section = "## Research Data\n\n"
     
     # Clean up the research data for better presentation
+    queries = generate_research_queries(company_name, additional_info)
     for i, data in enumerate(research_data, 1):
-        research_section += f"### Research Item {i}\n\n"
+        # Get the title from the queries list if available, otherwise use a default title
+        if i <= len(queries) and hasattr(queries[i-1], 'get') and queries[i-1].get('title'):
+            section_title = queries[i-1]['title']
+        else:
+            section_title = f"Research Item {i}"
+            
+        research_section += f"### {section_title}\n\n"
         
         if isinstance(data, dict):
             # Format text content
@@ -805,28 +833,52 @@ def generate_location_section(location_restrictions):
 
 def save_report(company_name, report, location_data=None):
     """Save the report to a file."""
-    # Create outputs directory if it doesn't exist
-    os.makedirs("outputs", exist_ok=True)
-    os.makedirs("outputs/json", exist_ok=True)
-    
     # Generate timestamp for filename
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     
     # Clean company name for filename
     clean_name = re.sub(r'[^\w\s-]', '', company_name).strip().replace(' ', '_')
     
+    # Create company-specific subfolder within outputs directory
+    company_folder = os.path.join("outputs", clean_name)
+    os.makedirs(company_folder, exist_ok=True)
+    
+    # Create date-based subfolder within company folder
+    date_folder = os.path.join(company_folder, datetime.now().strftime("%Y%m%d"))
+    os.makedirs(date_folder, exist_ok=True)
+    
+    # Create JSON output directory if it doesn't exist
+    json_output_dir = os.path.join(date_folder, "json")
+    os.makedirs(json_output_dir, exist_ok=True)
+    
     # Create filename
     filename = f"{clean_name}_{timestamp}.md"
-    filepath = os.path.join("outputs", filename)
+    filepath = os.path.join(date_folder, filename)
     
-    # Save the report
+    # Save the markdown report
     with open(filepath, "w", encoding="utf-8") as f:
         f.write(report)
+    
+    # Generate PDF from markdown
+    try:
+        from markdown_pdf import MarkdownPdf
+        
+        pdf_filename = f"{clean_name}_{timestamp}.pdf"
+        pdf_filepath = os.path.join(date_folder, pdf_filename)
+        
+        # Convert markdown to PDF
+        print(f"Generating PDF report: {pdf_filepath}")
+        md_pdf = MarkdownPdf()
+        md_pdf.convert_markdown_to_pdf(filepath, pdf_filepath)
+        print(f"PDF report generated successfully")
+    except Exception as e:
+        print(f"Error generating PDF: {e}")
+        print("PDF generation skipped. Please install required dependencies with: pip install markdown-pdf")
     
     # Save location data as JSON if provided
     if location_data:
         json_filename = f"{clean_name}_{timestamp}_location.json"
-        json_filepath = os.path.join("outputs", "json", json_filename)
+        json_filepath = os.path.join(json_output_dir, json_filename)
         
         with open(json_filepath, "w", encoding="utf-8") as f:
             json.dump(location_data, f, indent=2)
@@ -865,10 +917,17 @@ def get_user_input():
     print("Example: For 'Mercury', you might add 'banking startup'")
     additional_info = input("> ").strip()
     
-    # Get reason for interest (for cover letter)
-    print("\nWhy are you interested in this company? (optional, press Enter to skip)")
-    print("This will be used to personalize your cover letter if the company is remote-friendly.")
-    interest_reason = input("> ").strip()
+    # Ask if user wants to generate a cover letter
+    print("\nWould you like to generate a cover letter? (yes/no):")
+    print("Cover letters are optional and can be personalized if you provide a reason for interest.")
+    generate_cover_letter = input("> ").strip().lower()
+    
+    interest_reason = None
+    if generate_cover_letter in ['yes', 'y']:
+        # Get reason for interest (for cover letter)
+        print("\nWhy are you interested in this company?")
+        print("This will be used to personalize your cover letter.")
+        interest_reason = input("> ").strip()
     
     return company_name, company_url, additional_info, interest_reason
 
@@ -902,7 +961,7 @@ def main():
         print("\nUsing Perplexity API for research...")
         for i, query in enumerate(queries, 1):
             print(f"\nProcessing query {i} of {len(queries)}...")
-            result = search_perplexity(query, company_name)
+            result = search_perplexity(query["query"], company_name)
             if result:
                 research_data.append(result)
                 print(f"Successfully added research data from query {i}")
@@ -916,7 +975,7 @@ def main():
         print("\nUsing OpenRouter API for research...")
         for i, query in enumerate(queries, 1):
             print(f"\nProcessing query {i} of {len(queries)}...")
-            result = search_openrouter(query, company_name)
+            result = search_openrouter(query["query"], company_name)
             if result:
                 research_data.append(result)
                 print(f"Successfully added research data from query {i}")
